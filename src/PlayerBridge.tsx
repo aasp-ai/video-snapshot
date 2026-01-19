@@ -39,40 +39,10 @@ export const PlayerBridge = () => {
                 autoPlay={true}
                 loop
                 acknowledgeRemotionLicense 
-                onFrameUpdate={onUpdate}
-            />
-        </div>
-    );
-};
-
-        window.addEventListener('message', handleMsg);
-        return () => window.removeEventListener('message', handleMsg);
-    }, []);
-
- 
-
-    const onUpdate = useCallback((e: { frame: number }) => {
-    window.parent.postMessage({ type: 'FRAME_UPDATE', frame: e.frame }, '*');
-}, []);
-
-    return (
-        <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden' }}>
-            <Player
-                ref={playerRef}
-                component={MyComposition }
-                durationInFrames={600}
-                compositionWidth={1080}
-                compositionHeight={1920}
-                fps={30}
-                controls={true} // HIDE NATIVE UI
-                style={{ width: '100%', height: '100%' }}
-                autoPlay={true}
-                loop
-                acknowledgeRemotionLicense 
                 // onFrameUpdate={onUpdate}
-
-                
             />
         </div>
     );
 };
+
+    
