@@ -1,13 +1,12 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef } from 'react';
 import { Player } from '@remotion/player';
 import type { PlayerRef } from '@remotion/player';
 import { MyComposition  } from './Composition';
-import { VIDEO_CONFIG } from './Root';
+import { VIDEO_CONFIG } from './Composition';
 
 export const PlayerBridge = () => {
     const playerRef = useRef<PlayerRef>(null);
 
-    // 1. Listen for commands from Parent
     useEffect(() => {
         const handleMsg = (e: MessageEvent) => {
             const player = playerRef.current;
@@ -21,10 +20,6 @@ export const PlayerBridge = () => {
         return () => window.removeEventListener('message', handleMsg);
     }, []);
 
-    const onUpdate = useCallback((e: { frame: number }) => {
-        window.parent.postMessage({ type: 'FRAME_UPDATE', frame: e.frame }, '*');
-    }, []);
-
     return (
         <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden', background: 'transparent' }}>
             <Player
@@ -34,15 +29,12 @@ export const PlayerBridge = () => {
                 compositionWidth={VIDEO_CONFIG.width}
                 compositionHeight={VIDEO_CONFIG.height}
                 fps={VIDEO_CONFIG.fps}
-                controls={false} // HIDE NATIVE UI
+                controls={true}
                 style={{ width: '100%', height: '100%' }}
                 autoPlay={true}
                 loop
                 acknowledgeRemotionLicense 
-                // onFrameUpdate={onUpdate}
             />
         </div>
     );
 };
-
-    
