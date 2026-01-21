@@ -1,16 +1,12 @@
-const WIDTH = 1080;
-const HEIGHT = 1920;
-const FPS = 30;
-const SCENE_SECONDS = [4, 4, 4, 4, 4, 4, 6, 5, 2, 8];
-
-// Calculate frames
-const SCENE_FRAMES = SCENE_SECONDS.map(s => Math.round(s * FPS));
-const TOTAL_FRAMES = SCENE_FRAMES.reduce((a, b) => a + b, 0);
-
+export const VIDEO_FPS = 30;
+export const VIDEO_WIDTH = 1080;
+export const VIDEO_HEIGHT = 1920;
+export const TOTAL_FRAMES = 660; // 22 Seconds
+export const COMPOSITION_ID = "AnimeReel";
 export const VIDEO_CONFIG = {
-    width: WIDTH,
-    height: HEIGHT,
-    fps: FPS,
+    width: VIDEO_WIDTH,
+    height: VIDEO_HEIGHT,
+    fps: VIDEO_FPS,
     durationInFrames: TOTAL_FRAMES,
-    id: "MotivationReel"
+    id: "AnimeReel"
 };

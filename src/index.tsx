@@ -1,5 +1,6 @@
 import { registerRoot, Composition } from 'remotion';
-import { MyVideo, VIDEO_CONFIG } from './Composition';
+import { MyVideo } from './Composition';
+import { VIDEO_CONFIG } from './VideoConfig';
 
 export const RemotionRoot = () => {
     return (

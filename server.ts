@@ -129,7 +129,7 @@ const getQualityConfig = (preset: string | undefined, customOptions?: CustomOpti
 
 app.post('/api/render', async (req, res) => {
     const { 
-        compositionId = 'MotivationReel',
+        compositionId ,
         preset = 'instagram',
         customOptions 
     } = req.body;

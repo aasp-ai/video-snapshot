@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { Player } from '@remotion/player';
 import type { PlayerRef } from '@remotion/player';
-import { MyVideo, VIDEO_CONFIG } from './Composition';
+import { MyVideo } from './Composition';
+import { VIDEO_CONFIG } from './VideoConfig';
 
 type RenderProgress = {
     progress: number;
@@ -306,7 +307,7 @@ export const PlayerBridge = () => {
                 fps={VIDEO_CONFIG.fps}
                 controls={true}
                 style={{ width: '100%', height: '100%' }}
-                autoPlay={true}
+                autoPlay={false}
                 loop
                 acknowledgeRemotionLicense 
             />

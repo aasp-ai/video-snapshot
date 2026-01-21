@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ocular.video — AI Video Creator</title>
+<style>
+:root{
+  --bg1:#f9f5f3;
+  --text:#1a1a1a;
+  --muted:#888;
+  --accent:#ff7b00;
+  --radius:14px;
+}
+html,body{
+  margin:0;height:100%;font-family:Inter,ui-sans-serif,system-ui;
+  background:radial-gradient(circle at center,#fff 0%,#f6f0ea 100%);
+  color:var(--text);
+}
+.container{max-width:880px;margin:60px auto;padding:0 20px;text-align:center;}
+.logo{font-weight:700;font-size:22px;color:var(--accent);letter-spacing:-0.3px;}
+h1{font-size:32px;margin:8px 0 6px;}
+p.lead{color:var(--muted);margin-bottom:40px;}
+.prompt-box{
+  background:#fff;border:1px solid #e2dcd6;border-radius:var(--radius);
+  padding:16px 18px;display:flex;flex-direction:column;align-items:stretch;
+  box-shadow:0 4px 20px rgba(0,0,0,0.04);max-width:720px;margin:0 auto;
+}
+.tabs{display:flex;justify-content:center;gap:12px;margin-bottom:12px;}
+.tab{font-size:13px;color:var(--muted);padding:6px 12px;border-radius:8px;cursor:pointer;}
+.tab.active{background:rgba(255,123,0,0.1);color:var(--accent);}
+textarea{
+  resize:none;border:none;outline:none;font-size:16px;min-height:56px;
+  width:100%;padding:8px 0;color:var(--text);
+}
+.actions{display:flex;justify-content:space-between;align-items:center;margin-top:12px;flex-wrap:wrap;gap:8px;}
+.left-actions{display:flex;gap:10px;align-items:center;}
+.chip{font-size:13px;background:#f2efeb;border:1px solid #e2dcd6;padding:6px 10px;border-radius:8px;cursor:pointer;}
+.select-style{border:none;background:#fff;padding:6px 10px;border-radius:8px;border:1px solid #e2dcd6;color:var(--muted);}
+.generate-btn{
+  background:linear-gradient(90deg,var(--accent),#ffb347);
+  border:none;color:#fff;font-weight:600;padding:10px 18px;border-radius:10px;cursor:pointer;
+}
+.response{margin-top:32px;color:var(--muted);font-size:15px;min-height:24px;}
+.preview{margin-top:28px;display:none;flex-direction:column;align-items:center;gap:16px;}
+.preview video{width:100%;max-width:720px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.1);}
+.preview-controls{display:flex;gap:12px;}
+.btn{padding:8px 14px;border-radius:8px;border:1px solid #ddd;cursor:pointer;font-size:14px;}
+.btn.primary{background:var(--accent);color:#fff;border:none;}
+footer{margin-top:40px;font-size:13px;color:var(--muted);}
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">ocular.video</div>
+    <h1>Your AI Video Creator</h1>
+    <p class="lead">Create cinematic videos just by chatting with Ocular.</p>
+
+    <div class="prompt-box">
+      <div class="tabs">
+        <div class="tab active">Text to video</div>
+        <div class="tab">Image reference</div>
+        <div class="tab">Video reference</div>
+      </div>
+      <textarea id="prompt" placeholder='e.g. "Create a 30s cinematic story about two friends at a café."'></textarea>
+
+      <div class="actions">
+        <div class="left-actions">
+          <div class="chip">🖼 Image</div>
+          <div class="chip">🎬 Video</div>
+          <div class="chip">🎵 Audio</div>
+          <div class="chip">🅰 Font</div>
+          <select class="select-style">
+            <option selected>Select a style</option>
+            <option>Cinematic</option>
+            <option>Reel</option>
+            <option>Story</option>
+            <option>Kinetic</option>
+          </select>
+        </div>
+        <button class="generate-btn" id="generateBtn">✨ Generate</button>
+      </div>
+    </div>
+
+    <div id="response" class="response"></div>
+
+    <div id="preview" class="preview">
+      <video id="videoPreview" autoplay muted loop playsinline src=""></video>
+      <div class="preview-controls">
+        <button class="btn">🔄 Regenerate</button>
+        <button class="btn primary">⬇️ Download</button>
+        <button class="btn">🪄 Refine</button>
+      </div>
+    </div>
+
+    <footer>Prototype — connect to LangGraph orchestration for full video generation.</footer>
+  </div>
+
+<script>
+const promptEl=document.getElementById('prompt');
+const responseEl=document.getElementById('response');
+const preview=document.getElementById('preview');
+const videoEl=document.getElementById('videoPreview');
+const generateBtn=document.getElementById('generateBtn');
+generateBtn.onclick=()=>{
+  const val=promptEl.value.trim();
+  if(!val){responseEl.textContent="Please describe your video idea first.";return;}
+  responseEl.textContent="Got it! Crafting your video concept...";
+  setTimeout(()=>{
+    responseEl.textContent="Generated a cinematic preview — scroll below.";
+    preview.style.display='flex';
+    // placeholder looping animation video
+    videoEl.src="https://cdn.pixabay.com/vimeo/755626405/abstract-125272.mp4?width=640&hash=05b18257b0648a9d8c184a75d6ef6713b665e9d2";
+  },1500);
+};
+</script>
+</body>
+</html>
