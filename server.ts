@@ -4,6 +4,7 @@ import { renderMedia, selectComposition } from '@remotion/renderer';
 import { bundle } from '@remotion/bundler';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,207 +16,176 @@ app.use(cors());
 app.use(express.json());
 
 const OUTPUT_DIR = path.join(__dirname, 'output');
+if (!fs.existsSync(OUTPUT_DIR)) {
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+}
 
-type SocialMediaPreset = 'tiktok' | 'instagram' | 'youtube' | 'twitter' | 'facebook' | 'linkedin';
+export type PlatformPreset = 
+    | 'tiktok'
+    | 'reels'
+    | 'youtube_shorts'
+    | 'youtube'
+    | 'twitter'
+    | 'linkedin'
+    | 'instagram_post'
+    | 'generic_vertical'
+    | 'generic_horizontal';
 
-type QualityConfig = {
-    codec: 'h264' | 'prores';
-    crf?: number;
-    videoBitrate?: `${number}M`;
-    x264Preset: 'medium' | 'slow' | 'fast';
-    audioCodec: 'aac';
-    audioBitrate: `${number}k`;
-    description: string;
-    maxDuration: string;
-    bitrateTarget: string;
+export type QualityTier = 'draft' | 'standard' | 'high' | 'professional';
+
+export interface ResolutionConfig {
+    width: number;
+    height: number;
+    fps: number;
+}
+
+export interface QualityConfig {
+    crf: number;
+    videoBitrate: string;
+    audioBitrate: string;
+    x264Preset: string;
+}
+
+export const PLATFORM_PRESETS: Record<PlatformPreset, ResolutionConfig> = {
+    tiktok: { width: 1080, height: 1920, fps: 30 },
+    reels: { width: 1080, height: 1920, fps: 30 },
+    youtube_shorts: { width: 1080, height: 1920, fps: 60 },
+    youtube: { width: 1920, height: 1080, fps: 60 },
+    twitter: { width: 1280, height: 720, fps: 30 },
+    linkedin: { width: 1200, height: 627, fps: 30 },
+    instagram_post: { width: 1080, height: 1080, fps: 30 },
+    generic_vertical: { width: 1080, height: 1920, fps: 30 },
+    generic_horizontal: { width: 1920, height: 1080, fps: 30 },
 };
 
-type CustomOptions = {
-    codec?: string;
-    crf?: number;
-    videoBitrate?: string;
-    x264Preset?: string;
-    audioCodec?: string;
-    audioBitrate?: string;
+export const QUALITY_TIERS: Record<QualityTier, QualityConfig> = {
+    draft: {
+        crf: 28,
+        videoBitrate: '2M',
+        audioBitrate: '128k',
+        x264Preset: 'ultrafast',
+    },
+    standard: {
+        crf: 23,
+        videoBitrate: '5M',
+        audioBitrate: '192k',
+        x264Preset: 'fast',
+    },
+    high: {
+        crf: 18,
+        videoBitrate: '10M',
+        audioBitrate: '256k',
+        x264Preset: 'medium',
+    },
+    professional: {
+        crf: 15,
+        videoBitrate: '20M',
+        audioBitrate: '320k',
+        x264Preset: 'slow',
+    },
 };
 
-const getQualityConfig = (preset: string | undefined, customOptions?: CustomOptions): QualityConfig => {
-    const presets: Record<SocialMediaPreset, QualityConfig> = {
-        tiktok: {
-            codec: 'h264' as const,
-            crf: 20,
-            videoBitrate: undefined,
-            x264Preset: 'medium',
-            audioCodec: 'aac',
-            audioBitrate: '128k' as const,
-            description: 'TikTok Reels (1080x1920, 60fps recommended)',
-            maxDuration: '60 seconds',
-            bitrateTarget: '8 Mbps - Optimized for mobile upload'
-        },
-        instagram: {
-            codec: 'h264' as const,
-            crf: 20,
-            videoBitrate: undefined,
-            x264Preset: 'medium',
-            audioCodec: 'aac',
-            audioBitrate: '192k' as const,
-            description: 'Instagram Reels/IGTV (1080x1920, 30-60fps)',
-            maxDuration: '90 seconds (Reels), 60 minutes (IGTV)',
-            bitrateTarget: '10 Mbps - Higher quality for feed'
-        },
-        youtube: {
-            codec: 'h264' as const,
-            crf: 18,
-            videoBitrate: undefined,
-            x264Preset: 'slow',
-            audioCodec: 'aac',
-            audioBitrate: '320k' as const,
-            description: 'YouTube (1920x1080, 30-60fps)',
-            maxDuration: '12 hours max',
-            bitrateTarget: '20 Mbps - High quality for streaming'
-        },
-        twitter: {
-            codec: 'h264' as const,
-            crf: undefined,
-            videoBitrate: '6M' as const,
-            x264Preset: 'fast',
-            audioCodec: 'aac',
-            audioBitrate: '128k' as const,
-            description: 'Twitter/X Video (1920x1080, 30fps)',
-            maxDuration: '2 minutes 20 seconds',
-            bitrateTarget: '6 Mbps - Fast upload, good quality'
-        },
-        facebook: {
-            codec: 'h264' as const,
-            crf: 20,
-            videoBitrate: undefined,
-            x264Preset: 'medium',
-            audioCodec: 'aac',
-            audioBitrate: '192k' as const,
-            description: 'Facebook Reels/Feed (1080x1920 or 1920x1080)',
-            maxDuration: '240 minutes',
-            bitrateTarget: '8 Mbps - Balanced for social'
-        },
-        linkedin: {
-            codec: 'h264' as const,
-            crf: 20,
-            videoBitrate: undefined,
-            x264Preset: 'medium',
-            audioCodec: 'aac',
-            audioBitrate: '192k' as const,
-            description: 'LinkedIn Video (1920x1080, 30fps)',
-            maxDuration: '10 minutes',
-            bitrateTarget: '10 Mbps - Professional quality'
-        }
-    };
+interface RenderRequest {
+    composition: string;
+    preset?: PlatformPreset;
+    quality?: QualityTier;
+    startFrame?: number;
+    endFrame?: number;
+    audio?: boolean;
+}
 
-    if (customOptions) {
-        return {
-            codec: (customOptions.codec as 'h264' | 'prores') || 'h264',
-            crf: customOptions.crf,
-            videoBitrate: (customOptions.videoBitrate as `${number}M`),
-            x264Preset: (customOptions.x264Preset as 'medium' | 'slow' | 'fast') || 'medium',
-            audioCodec: 'aac',
-            audioBitrate: (customOptions.audioBitrate as `${number}k`) || '128k' as const,
-            description: 'Custom configuration',
-            maxDuration: 'Custom',
-            bitrateTarget: 'Custom bitrate'
-        };
-    }
-
-    const safePreset = (preset as SocialMediaPreset) || 'instagram';
-    return presets[safePreset] || presets.instagram;
-};
+function sendEvent(res: express.Response, event: string, data: unknown) {
+    res.write(`event: ${event}\n`);
+    res.write(`data: ${JSON.stringify(data)}\n\n`);
+}
 
 app.post('/api/render', async (req, res) => {
-    const { 
-        compositionId ,
-        preset = 'instagram',
-        customOptions 
-    } = req.body;
+    const {
+        composition,
+        preset = 'youtube',
+        quality = 'high',
+        startFrame,
+        endFrame,
+        audio = true,
+    } = req.body as RenderRequest;
 
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     res.setHeader('Access-Control-Allow-Origin', '*');
 
-    const sendEvent = (event: string, data: unknown) => {
-        res.write(`event: ${event}\n`);
-        res.write(`data: ${JSON.stringify(data)}\n\n`);
-    };
-
     try {
-        const qualityConfig = getQualityConfig(preset, customOptions);
+        const platformConfig = PLATFORM_PRESETS[preset];
+        const qualityConfig = QUALITY_TIERS[quality];
 
-        sendEvent('status', { 
-            status: 'initializing', 
-            message: `Starting render with ${preset} preset...`,
-            preset: preset,
-            quality: qualityConfig
+        sendEvent(res, 'status', {
+            status: 'initializing',
+            message: `Starting render for ${preset} (${platformConfig.width}x${platformConfig.height} @ ${platformConfig.fps}fps)`,
+            preset,
+            quality,
         });
-        
-        console.log(`Received render request for compositionId: ${compositionId}, preset: ${preset}`);
 
-        sendEvent('status', { status: 'bundling', message: 'Bundling project...' });
+        sendEvent(res, 'status', { status: 'bundling', message: 'Bundling project...' });
 
         const bundledLocation = await bundle({
             entryPoint: path.join(__dirname, 'src/index.tsx'),
             webpackOverride: (config) => config,
         });
 
-        sendEvent('status', { status: 'selecting', message: 'Selecting composition...' });
+        sendEvent(res, 'status', { status: 'selecting', message: 'Selecting composition...' });
 
-        const composition = await selectComposition({
+        const selectedComposition = await selectComposition({
             serveUrl: bundledLocation,
-            id: compositionId,
+            id: composition,
             inputProps: {},
         });
 
-        const outputFile = path.join(OUTPUT_DIR, `video-${Date.now()}.mp4`);
+        const outputFilename = `render_${Date.now()}.mp4`;
+        const outputPath = path.join(OUTPUT_DIR, outputFilename);
 
-        sendEvent('status', { 
-            status: 'rendering', 
-            message: 'Rendering video...', 
-            fileName: path.basename(outputFile),
-            codec: qualityConfig.codec,
-            crf: qualityConfig.crf,
-            bitrate: qualityConfig.videoBitrate
+        sendEvent(res, 'status', {
+            status: 'rendering',
+            message: 'Rendering video...',
+            filename: outputFilename,
+            codec: 'h264',
         });
 
         await renderMedia({
-            composition,
+            composition: selectedComposition,
             serveUrl: bundledLocation,
-            outputLocation: outputFile,
-            codec: qualityConfig.codec,
-            ...(qualityConfig.crf !== undefined && { crf: qualityConfig.crf }),
-            ...(qualityConfig.videoBitrate !== undefined && { videoBitrate: qualityConfig.videoBitrate }),
-            x264Preset: qualityConfig.x264Preset,
-            audioCodec: qualityConfig.audioCodec,
-            audioBitrate: qualityConfig.audioBitrate,
-            inputProps: {},
-            onProgress: ({ progress, renderedFrames, encodedFrames, stitchStage }) => {
-                sendEvent('progress', {
+            outputLocation: outputPath,
+            codec: 'h264',
+            crf: qualityConfig.crf,
+            videoBitrate: qualityConfig.videoBitrate,
+            x264Preset: qualityConfig.x264Preset as 'ultrafast' | 'fast' | 'medium' | 'slow',
+            audioCodec: 'aac',
+            // audioBitrate: qualityConfig.audioBitrate,
+            // mute: !audio,
+            startFrame,
+            endFrame,
+            fps: platformConfig.fps,
+            width: platformConfig.width,
+            height: platformConfig.height,
+            onProgress: ({ progress }) => {
+                sendEvent(res, 'progress', {
                     progress: Math.round(progress * 100),
-                    renderedFrames,
-                    encodedFrames,
-                    stage: stitchStage
+                    percentage: progress,
                 });
             },
         });
 
-        sendEvent('complete', {
+        sendEvent(res, 'complete', {
             success: true,
-            filePath: outputFile,
-            fileName: path.basename(outputFile),
-            downloadUrl: `http://localhost:3001/api/download/${path.basename(outputFile)}`,
-            preset: preset,
-            quality: qualityConfig
+            filename: outputFilename,
+            downloadUrl: `http://localhost:${PORT}/api/download/${outputFilename}`,
+            preset,
+            quality,
         });
 
     } catch (error) {
         console.error('Render error:', error);
-        sendEvent('error', {
-            error: error instanceof Error ? error.message : 'Unknown error'
+        sendEvent(res, 'error', {
+            error: error instanceof Error ? error.message : 'Unknown error',
         });
     } finally {
         res.end();
@@ -226,18 +196,42 @@ app.get('/api/download/:filename', (req, res) => {
     const { filename } = req.params;
     const filePath = path.join(OUTPUT_DIR, filename);
 
-    res.download(filePath, (err) => {
-        if (err) {
-            console.error('Download error:', err);
-            res.status(404).json({ error: 'File not found' });
-        }
+    if (fs.existsSync(filePath)) {
+        res.download(filePath);
+    } else {
+        res.status(404).json({ error: 'File not found' });
+    }
+});
+
+app.get('/api/presets', (_req, res) => {
+    res.json({
+        platforms: Object.keys(PLATFORM_PRESETS),
+        qualities: Object.keys(QUALITY_TIERS),
+        presets: Object.entries(PLATFORM_PRESETS).map(([name, config]) => ({
+            name,
+            ...config,
+        })),
+        // qualities: Object.entries(QUALITY_TIERS).map(([name, config]) => ({
+        //     name,
+        //     ...config,
+        // })),
     });
 });
 
 app.get('/api/status', (_req, res) => {
-    res.json({ status: 'ready', message: 'Render API is ready' });
+    const files = fs.readdirSync(OUTPUT_DIR);
+    res.json({
+        status: 'ready',
+        message: 'Render API is ready',
+        platforms: Object.keys(PLATFORM_PRESETS),
+        qualities: Object.keys(QUALITY_TIERS),
+        rendersCount: files.length,
+    });
 });
 
 app.listen(PORT, () => {
-    console.log(`Render API server running on http://localhost:${PORT}`);
+    console.log(`🎬 Rendering server running on http://localhost:${PORT}`);
+    console.log(`📁 Renders directory: ${OUTPUT_DIR}`);
+    console.log(`📱 Platforms: ${Object.keys(PLATFORM_PRESETS).join(', ')}`);
+    console.log(`⚡ Qualities: ${Object.keys(QUALITY_TIERS).join(', ')}`);
 });

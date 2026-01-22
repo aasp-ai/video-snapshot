@@ -1,18 +1,20 @@
 import { registerRoot, Composition } from 'remotion';
-import { MyVideo } from './Composition';
-import { VIDEO_CONFIG } from './VideoConfig';
+import { MyComposition } from './workspace/Composition';
+import { VIDEO_CONFIG } from './workspace/VideoConfig';
+import { TestComposition } from './workspace/examples/complete/test-composition';
 
 export const RemotionRoot = () => {
     return (
         <>
             <Composition
                 id={VIDEO_CONFIG.id}
-                component={MyVideo}
+                component={MyComposition}
                 durationInFrames={VIDEO_CONFIG.durationInFrames}
                 width={VIDEO_CONFIG.width}
                 height={VIDEO_CONFIG.height}
                 fps={VIDEO_CONFIG.fps}
             />
+            <TestComposition />
         </>
     );
 };
