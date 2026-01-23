@@ -12,9 +12,8 @@
     "generate-audio": "node generate-audio.js",
     "remotion": "remotion studio src/index.ts",
     "render": "remotion render src/index.ts AI-Video-Composition --codec=h264 --output=video.mp4",
-    "render:prores": "remotion render src/index.ts AI-Video-Composition --codec=prores --output=video.mov",
-    "server": "tsx server.ts",
-    "dev:all": "concurrently \"npm run dev\" \"npm run server\""
+    "render:prores": "remotion render src/index.ts AI-Video-Composition --codec=prores --output=video.mov"
+    
   },
   "description": "Production-ready Remotion video sandbox with comprehensive library support for AI agents",
   "dependencies": {

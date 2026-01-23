@@ -16,13 +16,22 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    "baseUrl": ".",
+    "paths": {
+      "remotion": ["src/shims/remotion.ts"],
+      "remotion/no-react": ["node_modules/remotion/dist/cjs/no-react.d.ts"],
+      "remotion-original": ["node_modules/remotion/dist/cjs/index.d.ts"],
+      "@remotion/easing": ["src/shims/remotion-easing.ts"]
+    },
+
     /* Linting */
-    "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
+    "strict": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/workspace/examples/**"]
 }

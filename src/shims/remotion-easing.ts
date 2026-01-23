@@ -1,0 +1,1 @@
+export { Easing } from "remotion";

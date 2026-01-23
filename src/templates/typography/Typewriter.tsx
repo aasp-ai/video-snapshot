@@ -123,7 +123,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({
         for (let i = 0; i < line.length; i++) {
             const char = line[i];
 
-            if (currentType === 'comment') {
+            if ((currentType as string) === 'comment') {
                 currentText += char;
                 if (i === line.length - 1) {
                     tokens.push({ text: currentText, type: currentType });

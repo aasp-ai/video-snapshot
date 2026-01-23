@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Composition, useCurrentFrame } from 'remotion';
-import { Heading, Subheading, GlitchText, Typewriter, SplitText } from '../../templates/typography';
-import { GeometricShapes, GradientOverlay, PatternBackground, BorderGlow, NoiseTexture } from '../../templates/graphics';
-import { BarChart, LineChart, ProgressRing, DonutChart } from '../../templates/charts';
-import { Fade, Slide, Wipe, Zoom } from '../../templates/transitions';
-import { LowerThird, Captions, CenterText } from '../../templates/overlay';
-import { ImageFrame, AudioBars } from '../../templates/media';
-import { Entrance, Continuous, Countdown } from '../../templates/animation';
-import { getColorPreset, GRADIENTS } from '../../utils/colors';
+import { Heading, Subheading, GlitchText, Typewriter, SplitText } from '../../../templates/typography';
+import { GeometricShapes, GradientOverlay, PatternBackground, BorderGlow, NoiseTexture } from '../../../templates/graphics';
+import { BarChart, LineChart, ProgressRing, DonutChart } from '../../../templates/charts';
+import { Fade, Slide, Wipe, Zoom } from '../../../templates/transitions';
+import { LowerThird, Captions, CenterText } from '../../../templates/overlay';
+import { ImageFrame, AudioBars } from '../../../templates/media';
+import { Entrance, Continuous, Countdown } from '../../../templates/animation';
+import { getColorPreset, GRADIENTS } from '../../../utils/colors';
 
 const FRAMES_PER_SCENE = 120;
 const TOTAL_SCENES = 8;
@@ -375,3 +375,5 @@ const Scene8 = ({ frame, progress }: { frame: number; progress: number }) => {
 };
 
 export default TestComposition;
+
+export const TestCompositionPlayer = TestCompositionWrapper;

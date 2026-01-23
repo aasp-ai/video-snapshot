@@ -1,7 +1,6 @@
 import { registerRoot, Composition } from 'remotion';
 import { MyComposition } from './workspace/Composition';
 import { VIDEO_CONFIG } from './workspace/VideoConfig';
-import { TestComposition } from './workspace/examples/complete/test-composition';
 
 export const RemotionRoot = () => {
     return (
@@ -14,7 +13,6 @@ export const RemotionRoot = () => {
                 height={VIDEO_CONFIG.height}
                 fps={VIDEO_CONFIG.fps}
             />
-            <TestComposition />
         </>
     );
 };

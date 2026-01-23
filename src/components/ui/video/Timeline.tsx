@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import { Slider } from '../ui/slider';
-import { Button } from '../ui/button';
+import { useState } from 'react';
+import { Slider } from '../slider';
+import { Button } from '../button';
 
 interface TimelineProps {
     duration: number;

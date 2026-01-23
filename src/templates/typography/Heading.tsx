@@ -13,6 +13,7 @@ interface HeadingProps {
     duration?: number;
     startFrame?: number;
     letterSpacing?: number;
+    style?: React.CSSProperties;
 }
 
 export const Heading: React.FC<HeadingProps> = ({
@@ -26,6 +27,7 @@ export const Heading: React.FC<HeadingProps> = ({
     duration = 30,
     startFrame = 0,
     letterSpacing = -1,
+    style,
 }) => {
     const frame = useCurrentFrame();
 
@@ -58,7 +60,7 @@ export const Heading: React.FC<HeadingProps> = ({
         }
     };
 
-    const style = useMemo(() => ({
+    const baseStyle = useMemo(() => ({
         fontFamily: font,
         fontSize: size,
         fontWeight: weight,
@@ -70,7 +72,7 @@ export const Heading: React.FC<HeadingProps> = ({
         ...getAnimationStyle(),
     }), [font, size, color, weight, align, letterSpacing, animation, progress]);
 
-    return <div style={style}>{text}</div>;
+    return <div style={{ ...baseStyle, ...style }}>{text}</div>;
 };
 
 interface SubheadingProps {

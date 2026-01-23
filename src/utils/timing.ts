@@ -1,4 +1,4 @@
-import { Easing, useCurrentFrame } from 'remotion';
+import { useCurrentFrame } from "remotion";
 
 export const FPS = 30;
 
@@ -34,15 +34,17 @@ export function useFrameProgress(startFrame: number, durationFrames: number) {
 }
 
 export function easeInOut(t: number): number {
-    return Easing.inOut(t);
+    return t < 0.5
+        ? 2 * t * t
+        : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
 export function easeOut(t: number): number {
-    return Easing.out(t);
+    return 1 - Math.pow(1 - t, 2);
 }
 
 export function easeIn(t: number): number {
-    return Easing.in(t);
+    return t * t;
 }
 
 export function springConfig(damping: number = 200, mass: number = 1) {

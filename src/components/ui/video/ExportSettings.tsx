@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { Button } from '../ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Slider } from '../ui/slider';
+import { useState } from 'react';
+import { Button } from '../button';
+import { Card, CardContent, CardHeader, CardTitle } from '../card';
 
 interface ExportSettingsProps {
     onExport: (options: ExportOptions) => void;
     isExporting?: boolean;
     progress?: number;
+    downloadUrl?: string | null;
+    renderId?: string | null;
+    errorMessage?: string | null;
 }
 
 export interface ExportOptions {
@@ -41,6 +43,9 @@ export const ExportSettings: React.FC<ExportSettingsProps> = ({
     onExport,
     isExporting = false,
     progress = 0,
+    downloadUrl = null,
+    renderId = null,
+    errorMessage = null,
 }) => {
     const [platform, setPlatform] = useState('youtube');
     const [quality, setQuality] = useState('high');
@@ -129,6 +134,28 @@ export const ExportSettings: React.FC<ExportSettingsProps> = ({
                             <div>Quality: {selectedQuality.label} (CRF {selectedQuality.crf})</div>
                             <div>Format: {FORMATS.find(f => f.value === format)?.label}</div>
                         </div>
+                    </div>
+                )}
+
+                {errorMessage && (
+                    <div className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive">
+                        {errorMessage}
+                    </div>
+                )}
+
+                {downloadUrl && !isExporting && (
+                    <div className="rounded-lg border border-primary/30 bg-primary/5 p-3 text-xs">
+                        <div className="font-medium mb-2">Export Ready</div>
+                        {renderId && (
+                            <div className="text-muted-foreground mb-2">Render ID: {renderId}</div>
+                        )}
+                        <a
+                            href={downloadUrl}
+                            className="text-primary underline"
+                            download
+                        >
+                            Download Video
+                        </a>
                     </div>
                 )}
 
