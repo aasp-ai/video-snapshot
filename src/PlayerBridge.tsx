@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { Player } from '@remotion/player';
 import type { PlayerRef } from '@remotion/player';
-import { MyComposition  } from './Composition';
+import { MyComposition  } from './workspace/Composition';
 import { VIDEO_CONFIG } from './Root';
 
 export const PlayerBridge = () => {
@@ -34,9 +34,9 @@ export const PlayerBridge = () => {
                 compositionWidth={VIDEO_CONFIG.width}
                 compositionHeight={VIDEO_CONFIG.height}
                 fps={VIDEO_CONFIG.fps}
-                controls={false} // HIDE NATIVE UI
+                controls={true} // HIDE NATIVE UI
                 style={{ width: '100%', height: '100%' }}
-                autoPlay={true}
+                autoPlay={false}
                 loop
                 acknowledgeRemotionLicense 
                 // onFrameUpdate={onUpdate}
