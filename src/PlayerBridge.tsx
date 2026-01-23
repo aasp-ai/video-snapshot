@@ -21,10 +21,6 @@ export const PlayerBridge = () => {
         return () => window.removeEventListener('message', handleMsg);
     }, []);
 
-    const onUpdate = useCallback((e: { frame: number }) => {
-        window.parent.postMessage({ type: 'FRAME_UPDATE', frame: e.frame }, '*');
-    }, []);
-
     return (
         <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0, overflow: 'hidden', background: 'transparent' }}>
             <Player
