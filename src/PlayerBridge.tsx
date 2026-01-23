@@ -2,7 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { Player } from '@remotion/player';
 import type { PlayerRef } from '@remotion/player';
 import { MyComposition  } from './workspace/Composition';
-import { VIDEO_CONFIG } from './Root';
+import { VIDEO_CONFIG } from './workspace/VideoConfig';
 
 export const PlayerBridge = () => {
     const playerRef = useRef<PlayerRef>(null);
