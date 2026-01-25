@@ -3,12 +3,6 @@ import { useCurrentFrame, useVideoConfig } from 'remotion';
 import { Application, Graphics, Text } from 'pixi.js';
 import gsap from 'gsap';
 
-/**
- * AI_ENGINEER_NOTE: 
- * This is the main video canvas. 
- * You can use PixiJS (appRef), Three.js (React Three Fiber), or GSAP for animations.
- * Always ensure cleanup in the useEffect return statement to prevent memory leaks during HMR.
- */
 
 export const MyComposition = () => {
     const containerRef = useRef<HTMLDivElement>(null);
