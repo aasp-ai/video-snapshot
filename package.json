@@ -28,7 +28,7 @@
     "@remotion/enable-scss": "4.0.407",
     "@remotion/fonts": "4.0.407",
     "@remotion/gif": "4.0.407",
-    "@remotion/google-fonts": "^4.0.409",
+    "@remotion/google-fonts": "4.0.407",
     "@remotion/install-whisper-cpp": "4.0.407",
     "@remotion/lambda": "4.0.407",
     "@remotion/layout-utils": "4.0.407",
